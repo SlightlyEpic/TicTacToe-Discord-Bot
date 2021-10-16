@@ -147,11 +147,18 @@ module.exports = {
                                 }
                             }
                         }
-                        if(!nullFound) match.drawMatch(newActionRows, challengerId, opponentId);
+                        if(!nullFound)  return match.drawMatch(newActionRows, challengerId, opponentId);
                         //
                         // if it didnt end
-                        match.gameMessage.edit({ components: newActionRows });
                         match.nextTurn();
+                        match.gameMessage.edit({ content: `${match.turn == 0 ? match.challenger.username : match.opponent.username} to make a move in 20 seconds`, components: newActionRows })
+                        .catch(() => {});
+                        setTimeout(() => {
+                            if(Date.now() - match.lastMove > 20000) {
+                                match.endMatch(match.turn == 0 ? 1 : 0, match.gameMessage.components, match.challenger.id, match.opponent.id)
+                            }
+                        }, 22000)
+                        match.lastMove = Date.now()
                     }
                 }
                 break;
@@ -159,7 +166,7 @@ module.exports = {
     },
 }
 
-async function startMatch (match) {
+async function startMatch(match) {
     let playRow1 = new MessageActionRow()
     .addComponents([
         new MessageButton()
@@ -227,7 +234,17 @@ async function startMatch (match) {
         .setStyle('PRIMARY')
     ])
 
-    match.gameMessage.edit({ components: [playRow1, playRow2, playRow3, playRow4] });
+    let turnUser = match.turn == 0 ? match.challenger : match.opponent
+    match.lastMove = Date.now();
+
+    match.gameMessage.edit({ content: `${turnUser.username} to make a move in 20 seconds.`,components: [playRow1, playRow2, playRow3, playRow4] })
+    .catch(() => {});
+
+    setTimeout(() => {
+        if(Date.now() - match.lastMove > 20000) {
+            match.endMatch(match.turn == 0 ? 1 : 0, match.gameMessage.components, match.challenger.id, match.opponent.id)
+        }
+    }, 22000)
 }
 
 let data = {
@@ -248,6 +265,7 @@ class Match {
         ];
         this.gameMessage = null;
         this.interaction = interaction;
+        this.lastMove = null;
     }
 
     setGameMessage(message) {
@@ -267,11 +285,12 @@ class Match {
                 actionRows[j].components[i].setDisabled(true);
             }
         }
-        this.gameMessage.edit({ content: `<@${winnerId}> wins!`, components: actionRows });
+        this.gameMessage.edit({ content: `<@${winnerId}> wins!`, components: actionRows })
+        .catch(() => {});
         delete data.inProgress[challengerId];
         delete data.inProgress[opponentId];
         setTimeout(() => {
-            this.gameMessage.delete();
+            this.gameMessage.delete().catch(() => {});
         }, 10000);
     }
 
@@ -284,11 +303,12 @@ class Match {
                 actionRows[j].components[i].setDisabled(true);
             }
         }
-        this.gameMessage.edit({ content: 'Game drawn!', components: actionRows });
+        this.gameMessage.edit({ content: 'Game drawn!', components: actionRows })
+        .catch(() => {});
         delete data.inProgress[challengerId];
         delete data.inProgress[opponentId];
         setTimeout(() => {
-            this.gameMessage.delete();
+            this.gameMessage.delete().catch(() => {});
         }, 10000);
     }
 }

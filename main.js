@@ -28,6 +28,7 @@ client.registerGuildCommands = utilsReg.registerGuildCommands;
 // Event listeners
 client.on('ready', c => {
     console.log(`\nLogged in and ready\n`);
+	c.user.setActivity(`${c.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} users`, {type: 'WATCHING'});
 })
 
 client.on('error', console.error);
@@ -53,4 +54,6 @@ client.on('guildCreate', guild => {
     .catch(() => {});
 })
 
-client.login(config.token);
+if(config.token) client.login(config.token);
+else if(process.env.TOKEN) client.log(process.env.TOKEN);
+else throw('Invalid token.');

@@ -4,15 +4,10 @@ const command = require('./index.js');
 let data = new SlashCommandBuilder()
     .setName(command.name)
     .setDescription(command.desc)
-    .addUserOption(option => option
-        .setName('user')
-        .setDescription('User to mute')
+    .addChannelOption(option => option
+        .setName('mutelog')
+        .setDescription('The channel in which mute logs are sent')
         .setRequired(true)
-        )
-    .addStringOption(option => option
-        .setName('reason')
-        .setDescription('The reason for muting this user')
-        .setRequired(false)
         );
 
 module.exports = { data };

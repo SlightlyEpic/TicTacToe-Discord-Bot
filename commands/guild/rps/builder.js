@@ -5,14 +5,9 @@ let data = new SlashCommandBuilder()
     .setName(command.name)
     .setDescription(command.desc)
     .addUserOption(option => option
-        .setName('user')
-        .setDescription('User to mute')
+        .setName('opponent')
+        .setDescription('The person whom you want to play with')
         .setRequired(true)
-        )
-    .addStringOption(option => option
-        .setName('reason')
-        .setDescription('The reason for muting this user')
-        .setRequired(false)
         );
 
 module.exports = { data };
