@@ -55,5 +55,5 @@ client.on('guildCreate', guild => {
 })
 
 if(config.token) client.login(config.token);
-else if(process.env.TOKEN) client.log(process.env.TOKEN);
+else if(process.env.TOKEN) client.login(process.env.TOKEN);
 else throw('Invalid token.');
