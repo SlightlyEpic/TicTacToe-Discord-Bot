@@ -69,7 +69,7 @@ module.exports = {
 
         setTimeout(() => {
             if(match.state == 0) {
-                reply.edit({ content: 'The opponent didnt join in time. The game has been terminated.' });
+                reply.edit({ content: 'The opponent didnt join in time. The game has been terminated.', components: [] });
                 delete data.waiting[challenger.id];
             }
         }, 60000);
@@ -226,11 +226,11 @@ module.exports = {
                                     setTimeout(async () => {
                                         if(Date.now() - match.lastMove > 20000) {
                                             if(!match.challengerPick && !match.opponentPick) {
-                                                match.gameMessage = await match.gameMessage.edit({ content: `Game drawn, both players failed to select an option within 20 seconds.\nScore: ${match.challengerScore} - ${match.opponentScore}` });
+                                                match.gameMessage = await match.gameMessage.edit({ content: `Game drawn, both players failed to select an option within 20 seconds.\nScore: ${match.challengerScore} - ${match.opponentScore}`, components: [] });
                                             } else if(!match.challengerPick && match.opponentPick) {
-                                                match.gameMessage = await match.gameMessage.edit({ content: `${match.opponent.username} wins! ${match.challenger.username} left the game.` });
+                                                match.gameMessage = await match.gameMessage.edit({ content: `${match.opponent.username} wins! ${match.challenger.username} left the game.`, components: [] });
                                             } else if(match.challengerPick && !match.opponentPick) {
-                                                match.gameMessage = await match.gameMessage.edit({ content: `${match.challenger.username} wins! ${match.opponent.username} left the game.` });
+                                                match.gameMessage = await match.gameMessage.edit({ content: `${match.challenger.username} wins! ${match.opponent.username} left the game.`, components: [] });
                                             }
                                         }
                                     }, 20000)
